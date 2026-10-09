@@ -1,2 +1,2 @@
-# site_pailans
-PAILANS web app — new GitHub Pages site
+# pailans-web
+PAILANS — веб-версия планировщика (PWA)
