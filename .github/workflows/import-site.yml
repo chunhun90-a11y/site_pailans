@@ -1,0 +1,31 @@
+name: Import PAILANS site
+on:
+  push:
+    paths:
+      - '.github/workflows/import-site.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout destination
+        uses: actions/checkout@v4
+      - name: Checkout source snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: chunhun90-a11y/pailans-web
+          ref: d9a082a53376e3c1bee6384ae462af9b0341b34e
+          path: _source
+          persist-credentials: false
+      - name: Copy site and commit to main
+        run: |
+          git -C _source archive HEAD | tar -x -C "$GITHUB_WORKSPACE"
+          rm -rf _source
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md app.js clock.css clock.js data.js extra.css extra.js icon.svg index.html logic.js manifest.webmanifest style.css sw.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Import PAILANS web files from original repository"
+          git push origin HEAD:main
